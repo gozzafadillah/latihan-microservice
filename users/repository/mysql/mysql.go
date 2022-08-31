@@ -25,7 +25,7 @@ func (ur UsersRepo) EmailPasswordCheck(email string, password string) error {
 
 // Store implements users_domain.Repo
 func (ur UsersRepo) Store(domain users_domain.Users) error {
-	err := ur.DB.Create(domain).Error
+	err := ur.DB.Create(&domain).Error
 	return err
 }
 

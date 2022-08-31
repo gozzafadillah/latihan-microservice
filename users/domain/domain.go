@@ -20,4 +20,5 @@ type Repo interface {
 	EmailPasswordCheck(email, password string) error
 	Store(domain Users) error
 	GetUser(email string) (Users, error)
+	// Todo: make get user by UUID
 }

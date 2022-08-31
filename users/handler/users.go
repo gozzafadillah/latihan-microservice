@@ -1,6 +1,7 @@
 package users_handler
 
 import (
+	"fmt"
 	users_domain "gozzafadillah/users/domain"
 	users_request "gozzafadillah/users/handler/request"
 	"net/http"
@@ -17,12 +18,14 @@ type UsersHandler struct {
 func NewUsersHandler(userBusiness users_domain.Business) UsersHandler {
 	return UsersHandler{
 		UsersBusiness: userBusiness,
+		Validation:    validator.New(),
 	}
 }
 
 func (uh *UsersHandler) Register(ctx echo.Context) error {
 	req := users_request.UsersJSON{}
 	ctx.Bind(&req)
+	fmt.Println("data :", req)
 	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
@@ -64,7 +67,7 @@ func (uh *UsersHandler) Login(ctx echo.Context) error {
 		})
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
-		"message": err.Error(),
+		"message": "success login",
 		"status":  http.StatusOK,
 		"result": map[string]interface{}{
 			"token": token,
