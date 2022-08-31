@@ -1,18 +1,21 @@
 package users_domain
 
-import "time"
+import (
+	"time"
+)
 
 type Users struct {
 	UUID      string
 	Name      string
 	Email     string
 	Password  string
+	Image     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 type Business interface {
-	Register(domain Users) error
+	Register(domain Users, file interface{}) error
 	Login(email, password string) (string, error)
 }
 
