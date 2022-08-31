@@ -11,8 +11,9 @@ type Users struct {
 	gorm.Model
 	UUID      string
 	Name      string
-	Email     string
+	Email     string `gorm:"unique"`
 	Password  string
+	Image     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -23,6 +24,7 @@ func ToDomain(rec Users) users_domain.Users {
 		Name:      rec.Name,
 		Email:     rec.Email,
 		Password:  rec.Password,
+		Image:     rec.Image,
 		CreatedAt: rec.CreatedAt,
 		UpdatedAt: rec.UpdatedAt,
 	}

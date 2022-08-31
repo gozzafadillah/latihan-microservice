@@ -3,6 +3,7 @@ module gozzafadillah
 go 1.18
 
 require (
+	github.com/cloudinary/cloudinary-go v1.7.0
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
@@ -12,9 +13,11 @@ require (
 )
 
 require (
+	github.com/creasty/defaults v1.5.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/gorilla/schema v1.2.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect

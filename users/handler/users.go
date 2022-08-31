@@ -4,6 +4,7 @@ import (
 	"fmt"
 	users_domain "gozzafadillah/users/domain"
 	users_request "gozzafadillah/users/handler/request"
+	"gozzafadillah/users/helper/claudinary"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -34,8 +35,11 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
 
+	// get file
+	req.File = claudinary.GetFile(ctx)
+
 	// to domain
-	err := uh.UsersBusiness.Register(users_request.ToDomain(req))
+	err := uh.UsersBusiness.Register(users_request.ToDomain(req), req.File)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": err.Error(),

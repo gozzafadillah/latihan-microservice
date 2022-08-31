@@ -2,7 +2,9 @@ package users_business
 
 import (
 	"errors"
+	"fmt"
 	users_domain "gozzafadillah/users/domain"
+	"gozzafadillah/users/helper/claudinary"
 	"gozzafadillah/users/middlewares"
 
 	"github.com/google/uuid"
@@ -34,14 +36,24 @@ func (ub UsersBusiness) Login(email string, password string) (string, error) {
 }
 
 // Register implements users_domain.Business
-func (ub UsersBusiness) Register(domain users_domain.Users) error {
+func (ub UsersBusiness) Register(domain users_domain.Users, file interface{}) error {
 	// make uuid
 	uuidData := uuid.New()
 	domain.UUID = uuidData.String()
+	// upload image
+	img, _ := claudinary.ImageUploadHelper(file, "users")
+
+	domain.Image = img
+	if domain.Image == "" {
+		domain.Image = "https://res.cloudinary.com/dt91kxctr/image/upload/v1655825545/go-bayeue/users/download_o1yrxx.png"
+	}
+
+	fmt.Println("image ", domain.Image)
+
 	// store data
 	err := ub.UsersRepo.Store(domain)
 	if err != nil {
-		return errors.New("failed store data")
+		return err
 	}
 	return nil
 }
