@@ -14,6 +14,7 @@ type Users struct {
 	Email     string `gorm:"unique"`
 	Password  string
 	Image     string
+	Role      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -25,6 +26,7 @@ func ToDomain(rec Users) users_domain.Users {
 		Email:     rec.Email,
 		Password:  rec.Password,
 		Image:     rec.Image,
+		Role:      rec.Role,
 		CreatedAt: rec.CreatedAt,
 		UpdatedAt: rec.UpdatedAt,
 	}

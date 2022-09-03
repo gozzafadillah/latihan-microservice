@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/cloudinary/cloudinary-go v1.7.0
+	github.com/go-playground/assert/v2 v2.0.1
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0

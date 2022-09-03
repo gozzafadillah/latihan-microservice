@@ -78,3 +78,21 @@ func (uh *UsersHandler) Login(ctx echo.Context) error {
 		},
 	})
 }
+
+func (uh *UsersHandler) GetUser(ctx echo.Context) error {
+	getUUID := ctx.Param("id")
+	res, err := uh.UsersBusiness.GetUserUUID(getUUID)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": err.Error(),
+			"status":  http.StatusBadRequest,
+		})
+	}
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get user",
+		"status":  http.StatusOK,
+		"result":  res,
+	})
+}
+
+// Todo: make Edit handler
