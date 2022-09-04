@@ -55,7 +55,7 @@ func (ub UsersBusiness) Login(email string, password string) (string, error) {
 		return "", errors.New("user not found")
 	}
 	// generate token JWT
-	token, err := ub.JWT.GenerateToken(usersData.UUID, usersData.Email)
+	token, err := ub.JWT.GenerateToken(usersData.UUID, usersData.Email, usersData.Role)
 	if err != nil {
 		return "", errors.New("failed generate token")
 	}

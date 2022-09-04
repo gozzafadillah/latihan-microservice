@@ -29,6 +29,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	e.POST("/login", cl.UserHandler.Login)
 	e.POST("/register", cl.UserHandler.Register)
-	e.GET("/users/:id", cl.UserHandler.GetUser)
+	auth := e.Group("users")
+	auth.Use(middleware.JWTWithConfig(cl.JWTMiddleware))
+	auth.GET("/:id", cl.UserHandler.GetUser)
 
 }
