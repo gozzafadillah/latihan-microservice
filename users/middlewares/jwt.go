@@ -1,8 +1,6 @@
 package middlewares
 
 import (
-	"errors"
-
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -24,7 +22,10 @@ func (jwtConf *ConfigJwt) Init() middleware.JWTConfig {
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(jwtConf.SecretJWT),
 		ErrorHandlerWithContext: middleware.JWTErrorHandlerWithContext(func(e error, c echo.Context) error {
-			return errors.New("cannot generete a token")
+			return c.JSON(401, map[string]interface{}{
+				"message": "unauthorized, missing or malformed jwt",
+				"rescode": 401,
+			})
 		}),
 	}
 }
