@@ -6,7 +6,7 @@ import (
 	users_handler "gozzafadillah/users/handler"
 	"gozzafadillah/users/middlewares"
 	users_mysql "gozzafadillah/users/repository/mysql"
-	"gozzafadillah/users/routes"
+	users_routes "gozzafadillah/users/routes"
 
 	"github.com/labstack/echo/v4"
 )
@@ -27,7 +27,7 @@ func main() {
 	userBusiness := users_business.NewUsersHandler(userRepo, configJWT)
 	UserHandler := users_handler.NewUsersHandler(userBusiness)
 
-	routeInit := routes.ControllerList{
+	routeInit := users_routes.ControllerList{
 		JWTMiddleware: configJWT.Init(),
 		UserHandler:   UserHandler,
 	}

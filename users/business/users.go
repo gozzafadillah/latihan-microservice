@@ -2,7 +2,6 @@ package users_business
 
 import (
 	"errors"
-	"fmt"
 	users_domain "gozzafadillah/users/domain"
 	"gozzafadillah/users/helper/claudinary"
 	"gozzafadillah/users/middlewares"
@@ -79,8 +78,6 @@ func (ub UsersBusiness) Register(domain users_domain.Users, file interface{}) er
 	if domain.Image == "" {
 		domain.Image = "https://res.cloudinary.com/dt91kxctr/image/upload/v1655825545/go-bayeue/users/download_o1yrxx.png"
 	}
-
-	fmt.Println("image ", domain.Image)
 
 	// store data
 	err := ub.UsersRepo.Store(domain)

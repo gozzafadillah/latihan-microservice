@@ -1,6 +1,8 @@
 package middlewares
 
 import (
+	"fmt"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -48,6 +50,7 @@ func (jwtConf *ConfigJwt) GenerateToken(userID string, email string, role string
 // GetUser from jwt ...
 func GetUser(c echo.Context) *JwtCustomClaims {
 	user := c.Get("user").(*jwt.Token)
+	fmt.Println("user :", user.Raw)
 	claims := user.Claims.(*JwtCustomClaims)
 	return claims
 }

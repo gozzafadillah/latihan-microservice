@@ -1,4 +1,4 @@
-package routes
+package users_routes
 
 import (
 	users_handler "gozzafadillah/users/handler"
