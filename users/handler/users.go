@@ -5,6 +5,7 @@ import (
 	users_domain "gozzafadillah/users/domain"
 	users_request "gozzafadillah/users/handler/request"
 	"gozzafadillah/users/helper/claudinary"
+	"gozzafadillah/users/middlewares"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -26,13 +27,15 @@ func NewUsersHandler(userBusiness users_domain.Business) UsersHandler {
 func (uh *UsersHandler) Register(ctx echo.Context) error {
 	req := users_request.UsersJSON{}
 	ctx.Bind(&req)
-	fmt.Println("data :", req)
 	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
 		}
-		return ctx.JSON(http.StatusBadRequest, stringerr)
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": stringerr,
+			"status":  http.StatusBadRequest,
+		})
 	}
 
 	// get file
@@ -60,7 +63,10 @@ func (uh *UsersHandler) Login(ctx echo.Context) error {
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
 		}
-		return ctx.JSON(http.StatusBadRequest, stringerr)
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": stringerr,
+			"status":  http.StatusBadRequest,
+		})
 	}
 
 	token, err := uh.UsersBusiness.Login(req.Email, req.Password)
@@ -88,6 +94,10 @@ func (uh *UsersHandler) GetUser(ctx echo.Context) error {
 			"status":  http.StatusBadRequest,
 		})
 	}
+
+	dataSession := middlewares.GetUser(ctx)
+	fmt.Println(dataSession)
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get user",
 		"status":  http.StatusOK,
