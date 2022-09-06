@@ -4,6 +4,8 @@ import (
 	"fmt"
 	users_domain "gozzafadillah/users/domain"
 	users_request "gozzafadillah/users/handler/request"
+	"gozzafadillah/users/helper/claudinary"
+	"gozzafadillah/users/middlewares"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -25,17 +27,22 @@ func NewUsersHandler(userBusiness users_domain.Business) UsersHandler {
 func (uh *UsersHandler) Register(ctx echo.Context) error {
 	req := users_request.UsersJSON{}
 	ctx.Bind(&req)
-	fmt.Println("data :", req)
 	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
 		}
-		return ctx.JSON(http.StatusBadRequest, stringerr)
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": stringerr,
+			"status":  http.StatusBadRequest,
+		})
 	}
 
+	// get file
+	req.File = claudinary.GetFile(ctx)
+
 	// to domain
-	err := uh.UsersBusiness.Register(users_request.ToDomain(req))
+	err := uh.UsersBusiness.Register(users_request.ToDomain(req), req.File)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": err.Error(),
@@ -56,7 +63,10 @@ func (uh *UsersHandler) Login(ctx echo.Context) error {
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
 		}
-		return ctx.JSON(http.StatusBadRequest, stringerr)
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": stringerr,
+			"status":  http.StatusBadRequest,
+		})
 	}
 
 	token, err := uh.UsersBusiness.Login(req.Email, req.Password)
@@ -74,3 +84,25 @@ func (uh *UsersHandler) Login(ctx echo.Context) error {
 		},
 	})
 }
+
+func (uh *UsersHandler) GetUser(ctx echo.Context) error {
+	getUUID := ctx.Param("id")
+	res, err := uh.UsersBusiness.GetUserUUID(getUUID)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": err.Error(),
+			"status":  http.StatusBadRequest,
+		})
+	}
+
+	dataSession := middlewares.GetUser(ctx)
+	fmt.Println(dataSession)
+
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get user",
+		"status":  http.StatusOK,
+		"result":  res,
+	})
+}
+
+// Todo: make Edit handler

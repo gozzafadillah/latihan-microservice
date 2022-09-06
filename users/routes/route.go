@@ -1,7 +1,8 @@
-package routes
+package users_routes
 
 import (
 	users_handler "gozzafadillah/users/handler"
+	"gozzafadillah/users/middlewares"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -12,9 +13,10 @@ type ControllerList struct {
 	UserHandler   users_handler.UsersHandler
 }
 
-// const server = "https://36e2-2001-448a-1102-1a0f-350a-677f-f95c-668a.ap.ngrok.io/"
-
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
+
+	// log
+	middlewares.LogMiddleware(e)
 
 	// access public
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -27,5 +29,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	e.POST("/login", cl.UserHandler.Login)
 	e.POST("/register", cl.UserHandler.Register)
+	auth := e.Group("users")
+	auth.Use(middleware.JWTWithConfig(cl.JWTMiddleware))
+	auth.GET("/:id", cl.UserHandler.GetUser)
 
 }

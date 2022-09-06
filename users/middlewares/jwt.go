@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -11,6 +11,7 @@ import (
 type JwtCustomClaims struct {
 	ID    string `json:"id"`
 	Email string `json:"email"`
+	Role  string `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -23,16 +24,20 @@ func (jwtConf *ConfigJwt) Init() middleware.JWTConfig {
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(jwtConf.SecretJWT),
 		ErrorHandlerWithContext: middleware.JWTErrorHandlerWithContext(func(e error, c echo.Context) error {
-			return errors.New("cannot generete a token")
+			return c.JSON(401, map[string]interface{}{
+				"message": "unauthorized, missing or malformed jwt",
+				"rescode": 401,
+			})
 		}),
 	}
 }
 
 // GenerateToken jwt ...
-func (jwtConf *ConfigJwt) GenerateToken(userID string, email string) (string, error) {
+func (jwtConf *ConfigJwt) GenerateToken(userID string, email string, role string) (string, error) {
 	claims := JwtCustomClaims{
 		ID:    userID,
 		Email: email,
+		Role:  role,
 	}
 
 	// Create token with claims
@@ -45,6 +50,7 @@ func (jwtConf *ConfigJwt) GenerateToken(userID string, email string) (string, er
 // GetUser from jwt ...
 func GetUser(c echo.Context) *JwtCustomClaims {
 	user := c.Get("user").(*jwt.Token)
+	fmt.Println("user :", user.Raw)
 	claims := user.Claims.(*JwtCustomClaims)
 	return claims
 }
